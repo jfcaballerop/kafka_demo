@@ -18,7 +18,7 @@ public class ProducerCtrl {
 
   @PostMapping("/hello-world")
   public String sendHelloWorld() {
-    sendSvc.sendMessage("Hello World");
+    sendSvc.sendMessageAsync("Hello World");
 
     return "Sended ...";
 
@@ -26,9 +26,15 @@ public class ProducerCtrl {
 
   @PostMapping("/send")
   public ResponseEntity<String> sendMessage(@RequestBody String msg) {
-    sendSvc.sendMessage(msg);
+    String resp = "";
+    try {
+      resp = sendSvc.sendMessageSync(msg);
+      return ResponseEntity.ok(resp);
+      // TODO: Falta capturar la exception de envío y diferenciarlo.
 
-    return ResponseEntity.ok("Sended ... " + msg);
+    } catch (InterruptedException e) {
+      return ResponseEntity.internalServerError().body(e.getMessage());
+    }
 
   }
 
