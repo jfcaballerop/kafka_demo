@@ -14,7 +14,7 @@ public class ReceiveMsgSvc {
   @Value(value = "${spring.kafka.consumer.group-id}")
   private String groupId;
 
-  @KafkaListener(topics = "${kafka.topic.name}")
+  @KafkaListener(topics = "${kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
   public void listener(@Payload String message) {
     System.out
         .println("Received Message from Topic [" + topic + "] in group: " + groupId + " msg: [ " + message + " ]");
