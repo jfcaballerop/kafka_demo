@@ -14,10 +14,19 @@ public class ReceiveMsgSvc {
   @Value(value = "${spring.kafka.consumer.group-id}")
   private String groupId;
 
+  @Value(value = "${spring.kafka.consumer.group-id2}")
+  private String groupId2;
+
   @KafkaListener(topics = "${kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
   public void listener(@Payload String message) {
     System.out
-        .println("Received Message from Topic [" + topic + "] in group: " + groupId + " msg: [ " + message + " ]");
+        .println("Received Message from Topic [" + topic + "] in group: " + groupId +
+            " msg: [ " + message + " ]");
+  }
+
+  @KafkaListener(topics = "${kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id2}", containerFactory = "filterKafkaListenerContainerFactory")
+  public void listenWithFilter(String message) {
+    System.out.println("Received Message in filtered listener: " + message);
   }
 
 }
