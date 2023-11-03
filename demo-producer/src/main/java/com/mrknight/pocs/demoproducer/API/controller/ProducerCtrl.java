@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mrknight.pocs.demoproducer.model.UserDTO;
 import com.mrknight.pocs.demoproducer.services.SendMsgSvc;
 
 @RestController
@@ -36,6 +37,14 @@ public class ProducerCtrl {
       return ResponseEntity.internalServerError().body(e.getMessage());
     }
 
+  }
+
+  @PostMapping("/user/send")
+  public ResponseEntity<String> sendUserMessage(@RequestBody UserDTO user) {
+    String resp = "";
+
+    sendSvc.sendUserMessageAsync(user);
+    return ResponseEntity.ok(resp);
   }
 
 }

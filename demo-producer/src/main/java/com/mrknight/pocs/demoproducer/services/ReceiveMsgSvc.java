@@ -5,6 +5,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import com.mrknight.pocs.demoproducer.model.UserDAO;
+
 @Component
 public class ReceiveMsgSvc {
 
@@ -27,6 +29,11 @@ public class ReceiveMsgSvc {
   @KafkaListener(topics = "${kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id2}", containerFactory = "filterKafkaListenerContainerFactory")
   public void listenWithFilter(String message) {
     System.out.println("Received Message in filtered listener: " + message);
+  }
+
+  @KafkaListener(topics = "${kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id3}", containerFactory = "kafkaUserListenerContainerFactory")
+  public void listenWithFilter(UserDAO message) {
+    System.out.println("Received USER Message in listener: " + message);
   }
 
 }

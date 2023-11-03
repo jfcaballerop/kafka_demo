@@ -11,6 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+
+import com.mrknight.pocs.demoproducer.model.UserDAO;
+import com.mrknight.pocs.demoproducer.model.UserDTO;
 
 @Configuration
 public class KafkaProducerConfig {
@@ -29,6 +33,20 @@ public class KafkaProducerConfig {
   @Bean
   public KafkaTemplate<String, String> kafkaTemplate() {
     return new KafkaTemplate<>(producerFactory());
+  }
+
+  @Bean
+  public ProducerFactory<String, UserDAO> userProducerFactory() {
+    Map<String, Object> configProps = new HashMap<>();
+    configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
+    configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+    return new DefaultKafkaProducerFactory<>(configProps);
+  }
+
+  @Bean
+  public KafkaTemplate<String, UserDAO> userKafkaTemplate() {
+    return new KafkaTemplate<>(userProducerFactory());
   }
 
 }

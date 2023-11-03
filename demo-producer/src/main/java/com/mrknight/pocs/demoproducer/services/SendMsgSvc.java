@@ -10,6 +10,9 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.mrknight.pocs.demoproducer.model.UserDAO;
+import com.mrknight.pocs.demoproducer.model.UserDTO;
+
 @Service
 public class SendMsgSvc {
   @Value(value = "${kafka.topic.name}")
@@ -17,6 +20,9 @@ public class SendMsgSvc {
 
   @Autowired
   private KafkaTemplate<String, String> kafkaTemplate;
+
+  @Autowired
+  private KafkaTemplate<String, UserDAO> userKafkaTemplate;
 
   // Style 1. Callback ASYNC Completable Future
   public void sendMessageAsync(String msg) {
@@ -55,6 +61,21 @@ public class SendMsgSvc {
       System.out.println(res);
     }
     return res;
+  }
+
+  public void sendUserMessageAsync(UserDTO user) {
+    UserDAO userdao = new UserDAO(user.getNombre(), user.getApellidos(), user.getDni());
+    CompletableFuture<SendResult<String, UserDAO>> future = userKafkaTemplate.send(topic, userdao);
+    future.whenComplete((result, exc) -> {
+      if (exc == null) {
+        System.out.println("Sent message=[" + user + "] with offset: " + result.getRecordMetadata().offset());
+      } else {
+        System.out.println("Unable sent message=[" + user + "] due to: " + exc.getMessage());
+        // en caso de error hacer un tratamiento de errores ASYNC
+        // Ex: insert en cola de err, o insert en BD, etc ...
+      }
+
+    });
   }
 
 }
