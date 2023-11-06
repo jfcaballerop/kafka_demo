@@ -32,7 +32,7 @@ public class ReceiveMsgSvc {
   }
 
   @KafkaListener(topics = "${kafka.topic.name}", groupId = "${spring.kafka.consumer.group-id3}", containerFactory = "kafkaUserListenerContainerFactory")
-  public void listenWithFilter(UserDAO message) {
+  public void listenerCustom(UserDAO message) {
     System.out.println("Received USER Message in listener: " + message);
   }
 

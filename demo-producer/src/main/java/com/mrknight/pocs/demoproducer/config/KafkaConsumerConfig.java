@@ -47,7 +47,7 @@ public class KafkaConsumerConfig {
     props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
     props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-    return new DefaultKafkaConsumerFactory<>(props);
+    return new DefaultKafkaConsumerFactory<>(props, new StringDeserializer(), new JsonDeserializer<>(UserDAO.class));
   }
 
   @Bean
